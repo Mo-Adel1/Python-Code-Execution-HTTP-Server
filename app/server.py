@@ -8,10 +8,18 @@ class HTTPServer:
         self.port = port
     
     def start(self):
-        pass
+        print(f"Starting server...")
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.bind((self.host, self.port))
+        server_socket.listen(5)
+        print(f"Server running at http://{self.host}:{self.port}")
+        connection, client_address = server_socket.accept()
+        self.handle_incomming_request(connection, client_address)
 
-    def handle_request(self, request):
-        pass
+    def handle_incomming_request(self, connection, client_address):
+        print("Handling request...")
+        print(f"connection: {connection}")
+        print(f"Request from: {client_address}")
 
     def parse_request(self, request):
         pass
