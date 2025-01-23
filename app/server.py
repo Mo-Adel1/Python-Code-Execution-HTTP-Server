@@ -39,10 +39,8 @@ class HTTPServer:
         
         handler = self.routes.get(path, self.handle_404)
         
-        result_executed_code = handler(method, path, headers, body)
+        response =  handler(method, path, headers, body)
         
-        response = create_response(200, result_executed_code)
-        print(response)
         connection.sendall(response.encode('utf-8'))
         
         connection.close()
