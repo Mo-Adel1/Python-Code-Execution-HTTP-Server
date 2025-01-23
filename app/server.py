@@ -18,16 +18,22 @@ class HTTPServer:
 
     def handle_incomming_request(self, connection, client_address):
         request = connection.recv(1024).decode('utf-8')
-        print("Handling request...")
-        print(f"connection: {request}")
-        print(f"Request from: {client_address[0]}")
-        method, path, http_version, headers, body = self.parse_request(request)
-        print(f"Method: {method}")
-        print(f"Path: {path}")
-        print(f"HTTP Version: {http_version}")
-        print(f"Headers: {headers}")
-        print(f"Body: {body}")
+        if not request:
+            connection.close()
+            return
         
+        method, path, http_version, headers, body = self.parse_request(request)
+
+        print(f"Request from: {client_address}")
+        print(f"{method} {path} {http_version}")
+        
+        if method == 'POST' and path == '/execute':
+            print("Executing code...")
+            self.execute_code(body)
+        else:
+            print("Invalid request")
+            
+        connection.close()
 
     def parse_request(self, request):
         lines = request.split('\r\n')
@@ -46,4 +52,7 @@ class HTTPServer:
         
 
     def create_response(self, request):
+        pass
+
+    def execute_code(self, code):
         pass
