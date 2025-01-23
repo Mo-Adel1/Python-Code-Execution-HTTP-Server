@@ -3,18 +3,26 @@ import socket
 class HTTPServer:
     host = 'localhost'
     port = 8765
-    def __init__(self, host, port: int):
+    routes = {}
+    def __init__(self, host, port):
         self.host = host
         self.port = port
     
+    def add_route(self, path, handler):
+        self.routes[path] = handler
+
     def start(self):
         print(f"Starting server...")
+
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.bind((self.host, self.port))
         server_socket.listen(5)
+
         print(f"Server running at http://{self.host}:{self.port}")
-        connection, client_address = server_socket.accept()
-        self.handle_incomming_request(connection, client_address)
+
+        while True:
+            connection, client_address = server_socket.accept()
+            self.handle_incomming_request(connection, client_address)
 
     def handle_incomming_request(self, connection, client_address):
         request = connection.recv(1024).decode('utf-8')
@@ -27,12 +35,13 @@ class HTTPServer:
         print(f"Request from: {client_address}")
         print(f"{method} {path} {http_version}")
         
-        if method == 'POST' and path == '/execute':
-            print("Executing code...")
-            self.execute_code(body)
-        else:
-            print("Invalid request")
-            
+        handler = self.routes.get(path)
+        result_executed_code = {}
+        if handler:
+            result_executed_code = handler(method, path, headers, body)
+        
+        response = result_executed_code
+        print(response)
         connection.close()
 
     def parse_request(self, request):
