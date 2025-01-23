@@ -26,6 +26,7 @@ class HTTPServer:
 
     def handle_incomming_request(self, connection, client_address):
         request = connection.recv(1024).decode('utf-8')
+
         if not request:
             connection.close()
             return
@@ -35,14 +36,14 @@ class HTTPServer:
         print(f"Request from: {client_address}")
         print(f"{method} {path} {http_version}")
         
-        handler = self.routes.get(path)
-        result_executed_code = {}
-        if handler:
-            result_executed_code = handler(method, path, headers, body)
+        handler = self.routes.get(path, self.handle_404)
+        
+        result_executed_code = handler(method, path, headers, body)
         
         response = self.create_response(200, result_executed_code)
-        
+
         connection.sendall(response.encode('utf-8'))
+        
         connection.close()
 
     def parse_request(self, request):
@@ -68,5 +69,6 @@ class HTTPServer:
         headers = f"Content-Type: {"text/html"}\r\nContent-Length: {len(result_executed_code)}\r\n\r\n"
         return response_line + headers + result_executed_code
 
-    def execute_code(self, code):
-        pass
+    def handle_404(self, method, path, headers):
+        body = "<h1>404 Not Found</h1>"
+        return self.create_response(404, body)
