@@ -40,12 +40,8 @@ class HTTPServer:
         if handler:
             result_executed_code = handler(method, path, headers, body)
         
-        status_messages = {200: "OK", 404: "Not Found", 400: "Bad Request", 405: "Method Not Allowed"}
-        status_message = status_messages.get(200, "OK")
-        response_line = f"HTTP/1.1 {200} {status_message}\r\n"
-        headers = f"Content-Type: {"text/html"}\r\nContent-Length: {len(result_executed_code)}\r\n\r\n"
-        response = response_line + headers + result_executed_code
-
+        response = self.create_response(200, result_executed_code)
+        
         connection.sendall(response.encode('utf-8'))
         connection.close()
 
@@ -65,8 +61,12 @@ class HTTPServer:
         return method, path, http_version, headers, body
         
 
-    def create_response(self, request):
-        pass
+    def create_response(self, status_code, result_executed_code):
+        status_messages = {200: "OK", 404: "Not Found", 400: "Bad Request", 405: "Method Not Allowed"}
+        status_message = status_messages.get(status_code, "OK")
+        response_line = f"HTTP/1.1 {200} {status_message}\r\n"
+        headers = f"Content-Type: {"text/html"}\r\nContent-Length: {len(result_executed_code)}\r\n\r\n"
+        return response_line + headers + result_executed_code
 
     def execute_code(self, code):
         pass
