@@ -17,12 +17,33 @@ class HTTPServer:
         self.handle_incomming_request(connection, client_address)
 
     def handle_incomming_request(self, connection, client_address):
+        request = connection.recv(1024).decode('utf-8')
         print("Handling request...")
-        print(f"connection: {connection}")
-        print(f"Request from: {client_address}")
+        print(f"connection: {request}")
+        print(f"Request from: {client_address[0]}")
+        method, path, http_version, headers, body = self.parse_request(request)
+        print(f"Method: {method}")
+        print(f"Path: {path}")
+        print(f"HTTP Version: {http_version}")
+        print(f"Headers: {headers}")
+        print(f"Body: {body}")
+        
 
     def parse_request(self, request):
-        pass
+        lines = request.split('\r\n')
+        method, path, http_version = lines[0].split()
+        headers = {}
+        for line in lines[1:]:
+            if line == "":
+                break
+            key, value = line.split(": ", 1)
+            headers[key] = value
+        body = ""
+        if "\r\n\r\n" in request:
+            body = request.split("\r\n\r\n")[1]
+
+        return method, path, http_version, headers, body
+        
 
     def create_response(self, request):
         pass
