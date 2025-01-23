@@ -1,4 +1,5 @@
 import socket
+from response import create_response
 
 class HTTPServer:
     host = 'localhost'
@@ -40,7 +41,7 @@ class HTTPServer:
         
         result_executed_code = handler(method, path, headers, body)
         
-        response = self.create_response(200, result_executed_code)
+        response = create_response(200, result_executed_code)
 
         connection.sendall(response.encode('utf-8'))
         
@@ -61,14 +62,6 @@ class HTTPServer:
 
         return method, path, http_version, headers, body
         
-
-    def create_response(self, status_code, result_executed_code):
-        status_messages = {200: "OK", 404: "Not Found", 400: "Bad Request", 405: "Method Not Allowed"}
-        status_message = status_messages.get(status_code, "OK")
-        response_line = f"HTTP/1.1 {200} {status_message}\r\n"
-        headers = f"Content-Type: {"text/html"}\r\nContent-Length: {len(result_executed_code)}\r\n\r\n"
-        return response_line + headers + result_executed_code
-
     def handle_404(self, method, path, headers):
         body = "<h1>404 Not Found</h1>"
         return self.create_response(404, body)
