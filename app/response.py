@@ -1,4 +1,4 @@
-def create_response(self, status_code, result_executed_code):
+def create_response(status_code, result_executed_code):
     status_messages = {200: "OK", 404: "Not Found", 400: "Bad Request", 405: "Method Not Allowed"}
     status_message = status_messages.get(status_code, "OK")
     response_line = f"HTTP/1.1 {200} {status_message}\r\n"
