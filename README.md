@@ -16,7 +16,9 @@ This project is a Python-based HTTP server that dynamically executes user-provid
 
 1. Open CMD For Windows or Terminal For Linux
 2. Clone the repository:
-   ```bash git clone https://github.com/Mo-Adel1/Python-Code-Execution-HTTP-Server.git```
+   ```bash
+      git clone https://github.com/Mo-Adel1/Python-Code-Execution-HTTP-Server.git
+   ```
 3. Navigate to the project directory:
    ```bash
    cd Python-Code-Execution-HTTP-Server
