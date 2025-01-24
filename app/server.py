@@ -1,5 +1,5 @@
 import socket
-from response import create_response
+from response import response
 
 class HTTPServer:
     host = 'localhost'
@@ -60,6 +60,5 @@ class HTTPServer:
 
         return method, path, http_version, headers, body
         
-    def handle_404(self, method, path, headers):
-        body = "<h1>404 Not Found</h1>"
-        return self.create_response(404, body)
+    def handle_404(self, method, path, headers, body):
+        return response(404, {"error": f"'{path}' path not found"})
