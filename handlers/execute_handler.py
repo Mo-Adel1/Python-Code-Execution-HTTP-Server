@@ -42,6 +42,8 @@ def parse_json(body):
 
 def format_execution_response(execution_result):
     stdout, stderr = execution_result.get("stdout"), execution_result.get("stderr")
+    if execution_result.get("error"):
+        return build_http_response(500, {"error": execution_result.get("error")})
     if stdout and stderr:
         return build_http_response(200, {"stdout": stdout, "stderr": stderr})
     elif stdout:
