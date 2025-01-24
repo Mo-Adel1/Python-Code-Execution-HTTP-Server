@@ -1,2 +1,4 @@
-app/__pycache__/
+server/__pycache__/
+execution/__pycache__/
+handlers/__pycache__/
 .vscode/launch.json

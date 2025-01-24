@@ -1,5 +1,5 @@
 import socket
-from response import response
+from .responses import build_http_response
 
 class HTTPServer:
     host = 'localhost'
@@ -9,7 +9,7 @@ class HTTPServer:
         self.host = host
         self.port = port
     
-    def add_route(self, path, handler):
+    def register_route(self, path, handler):
         self.routes[path] = handler
 
     def start(self):
@@ -23,29 +23,29 @@ class HTTPServer:
 
         while True:
             connection, client_address = server_socket.accept()
-            self.handle_incomming_request(connection, client_address)
+            self.handle_request(connection, client_address)
 
-    def handle_incomming_request(self, connection, client_address):
+    def handle_request(self, connection, client_address):
         request = connection.recv(1024).decode('utf-8')
 
         if not request:
             connection.close()
             return
         
-        method, path, http_version, headers, body = self.parse_request(request)
+        method, path, http_version, headers, body = self.parse_http_request(request)
 
         print(f"Request from: {client_address}")
         print(f"{method} {path} {http_version}")
         
-        handler = self.routes.get(path, self.handle_404)
-        
-        response =  handler(method, path, headers, body)
-        
+        handler = self.routes.get(path)
+        if handler:
+            response = handler(method, body)
+        else:
+            response = build_http_response(404, {"error": f"'{path}' path not found"})
         connection.sendall(response.encode('utf-8'))
-        
         connection.close()
 
-    def parse_request(self, request):
+    def parse_http_request(self, request):
         lines = request.split('\r\n')
         method, path, http_version = lines[0].split()
         headers = {}
@@ -59,6 +59,3 @@ class HTTPServer:
             body = request.split("\r\n\r\n")[1]
 
         return method, path, http_version, headers, body
-        
-    def handle_404(self, method, path, headers, body):
-        return response(404, {"error": f"'{path}' path not found"})
