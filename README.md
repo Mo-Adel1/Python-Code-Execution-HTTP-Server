@@ -12,35 +12,21 @@ This project is a Python-based HTTP server that dynamically executes user-provid
 
 ## Installation Instructions
 
-### For Windows:
+### For Windows and Linux:
 
-1. Download the project files from the repository.
-2. Open Command Prompt.
+1. Open CMD For Windows or Terminal For Linux
+2. Clone the repository:
+   ```bash
+  git clone https://github.com/Mo-Adel1/Python-Code-Execution-HTTP-Server.git
+   ```
 3. Navigate to the project directory:
    ```bash
-   cd c:\Python-Code-Execution-HTTP-Server
+   cd Python-Code-Execution-HTTP-Server
    ```
 4. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-
-### For Linux:
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Open a terminal.
-3. Navigate to the project directory:
-   ```bash
-   cd /path/to/Python-Code-Execution-HTTP-Server
-   ```
-4. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
 ## Running the Project
 
 To run the project, execute the following command:
@@ -53,10 +39,3 @@ python main.py
 
 Provide examples of how to use the project here.
 
-## Contributing
-
-If you would like to contribute to this project, please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
