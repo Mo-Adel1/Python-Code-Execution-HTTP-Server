@@ -43,7 +43,7 @@ class HTTPServer:
         
         connection.sendall(response.encode('utf-8'))
         
-        # connection.close()
+        connection.close()
 
     def parse_request(self, request):
         lines = request.split('\r\n')
