@@ -1,9 +1,6 @@
 import json
-import sys
-import io
-import re
-import traceback
 from response import response
+from executor import execute_user_code
 
 def execute_handler(method, path, headers, body):
     if method != "POST":
@@ -11,81 +8,47 @@ def execute_handler(method, path, headers, body):
     
     is_valid, result = parse_request_body(body)
     if not is_valid:
-        return result  # Return the error response directly
+        return result
     
-    code = result  # This is the valid code to execute
-
     try:
-        execution_result = execute_user_code(code)
-        
-        # Determine if stdout or stderr should be returned
-        if execution_result["stderr"] and execution_result["stdout"]:
-            return response(200, execution_result)
-        elif execution_result["stdout"]:
-            return response(200, {"stdout": execution_result.get("stdout", "")})
-        else:
-            return response(200, {"stderr": execution_result.get("stderr", "")})
-    
+        execution_result = execute_user_code(result)
+        return build_response(execution_result)
     except Exception:
         return response(500, {"error": "Internal server error"})
 
 def parse_request_body(body):
-    if not body:  # Check if body is empty
+    """Parses and validates the request body."""
+    if not body:
         return False, response(400, {"error": "Empty body is not allowed"})
     
-    try:
-        body_json = json.loads(body)
-    except json.JSONDecodeError:
+    body_json = parse_json(body)
+    if not body_json:
         return False, response(400, {"error": "Invalid JSON payload"})
     
-    # Validate 'code' key in the JSON body
-    if "code" not in body_json:
-        return False, response(400, {"error": "'code' key is required"})
+    extra_keys = [key for key in body_json.keys() if key != "code"]
+    if extra_keys:
+        return False, response(400, {"error": f"Unexpected keys: {', '.join(extra_keys)}"})
 
-    if not body_json.get("code").strip():
-        return False, response(400, {"error": "No code to execute"})
+    code = body_json.get("code")
+    if not code or not code.strip():
+        return False, response(400, {"error": "Code is required"})
     
-    return True, body_json.get("code")
+    return True, code
 
-def execute_user_code(code):
-    stdout = io.StringIO()
-    stderr = io.StringIO()
-
-    # Redirect standard output and error
-    sys.stdout = stdout
-    sys.stderr = stderr
-
+def parse_json(body):
+    """Safely parse JSON from the request body."""
     try:
-        exec(code, {})
-        return {"stdout": stdout.getvalue(), "stderr": ""}
-    except Exception:
-        raw_traceback = traceback.format_exc()
-        clean_traceback = clean_traceback_paths(raw_traceback)
-        return {"stdout": stdout.getvalue(), "stderr": clean_traceback}
-    finally:
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
+        return json.loads(body)
+    except json.JSONDecodeError:
+        return None
 
-def clean_traceback_paths(traceback_str):
-    # Replace all file paths with "<stdin>"
-    cleaned_traceback = re.sub(r'File ".*?",', 'File "<stdin>",', traceback_str)
-
-    # Remove the internal exec and line references to keep only relevant traceback lines
-    cleaned_traceback = re.sub(r'  File "<stdin>", line \d+, in .*\n    .*\n    ~+.*\n', '', cleaned_traceback)
-
-    # Remove extra leading spaces and unnecessary internal lines
-    cleaned_lines = []
-    capture = False
-
-    for line in cleaned_traceback.splitlines():
-        if "File \"<stdin>\"," in line:
-            capture = True
-        if capture:
-            cleaned_lines.append(line)
-    
-    # Add the traceback header manually if it's not already included
-    if "Traceback (most recent call last):" not in cleaned_lines:
-        cleaned_lines.insert(0, "Traceback (most recent call last):")
-
-    # Return the cleaned traceback
-    return "\n".join(cleaned_lines)
+def build_response(execution_result):
+    """Builds a structured response based on execution result."""
+    stdout, stderr = execution_result.get("stdout"), execution_result.get("stderr")
+    if stdout and stderr:
+        return response(200, {"stdout": stdout, "stderr": stderr})
+    elif stdout:
+        return response(200, {"stdout": stdout})
+    elif stderr:
+        return response(200, {"stderr": stderr})
+    return response(500, {"error": "Internal server error"})
