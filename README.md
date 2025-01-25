@@ -74,7 +74,7 @@ python main.py
 ```
 ## Easy Testing with Postman
 
-For easy testing, we have provided a **Postman Collection** that contains basic examples and unit tests for the server.
+For easy testing, I have provided a **Postman Collection** that contains basic examples and unit tests for the server.
 
 ### Postman Collection: `HTTP-Server.postman_collection.json`
 
