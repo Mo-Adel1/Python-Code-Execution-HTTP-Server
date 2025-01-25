@@ -1,67 +1,66 @@
+import io
 import sys
-import threading
-import subprocess
+import traceback
 import psutil
+import time
 from .traceback import clean_traceback_paths
+from multiprocessing import Process, Queue
 
-
-TIME_LIMIT = 2 
+TIME_LIMIT = 2
 MEMORY_LIMIT_MB = 100
-
 
 def execute_code(code):
     result = {"stdout": "", "stderr": "", "error": ""}
 
-    try:
-        process = _start_subprocess(code)
-        memory_thread = _start_memory_monitor(process.pid, MEMORY_LIMIT_MB, result)
+    result_queue = Queue()    
+    process = Process(target=_execute_user_code, args=(code, result_queue))
+    process.start()
 
-        try:
-            result["stdout"], result["stderr"] = process.communicate(timeout=TIME_LIMIT)
-        except subprocess.TimeoutExpired:
-            _handle_timeout(process, result)
+    start_time = time.time()
+    while process.is_alive():
+        if _check_memory(process.pid):
+            process.terminate()
+            result["error"] = "Memory limit exceeded"
+            break
+        
+        if _check_time(start_time):
+            process.terminate()
+            result["error"] = "Execution timeout"
+            break
 
-        memory_thread.join()  # Ensure memory thread completes
+        time.sleep(0.1)
 
-    except Exception as e:
-        result["error"] = str(e)
+    if not result_queue.empty():
+        result_data = result_queue.get()
+        if "error" in result_data:
+            result["error"] = result_data["error"]
+        else:
+            result["stdout"] = result_data["stdout"]
+            result["stderr"] = result_data["stderr"]
 
     return result
 
+def _check_memory(pid):
+    memory_info = psutil.Process(pid).memory_info()
+    return memory_info.rss > MEMORY_LIMIT_MB * 1024 * 1024  # If memory exceeds limit
 
-def _start_subprocess(code):
-    return subprocess.Popen(
-        [sys.executable, "-c", code],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
+def _check_time(start_time):
+    return time.time() - start_time > TIME_LIMIT  # If execution time exceeds limit
 
+def _execute_user_code(code, result_queue):
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    sys.stdout = stdout
+    sys.stderr = stderr
 
-def _start_memory_monitor(pid, memory_limit_mb, result):
-    memory_thread = threading.Thread(target=_monitor_memory, args=(pid, memory_limit_mb, result))
-    memory_thread.daemon = True
-    memory_thread.start()
-    return memory_thread
-
-
-def _monitor_memory(pid, memory_limit_mb, result):
-    memory_limit_bytes = memory_limit_mb * 1024 * 1024
     try:
-        process = psutil.Process(pid)
-        while process.is_running():
-            if process.memory_info().rss > memory_limit_bytes:
-                process.terminate()
-                result["error"] = "Memory limit exceeded"
-                break
-    except psutil.NoSuchProcess:
-        pass
-
-
-def _handle_timeout(process, result):
-    process.kill()
-    result["error"] = "Execution timeout"
-
+        exec(code, {})  # Execute the user code
+        result_queue.put({"stdout": stdout.getvalue(), "stderr": stderr.getvalue()})
+    except Exception as e:
+        result_queue.put({"error": str(e)})
+    finally:
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
 
 def handle_execution_error(stdout, stderr, error_message=None):
     raw_traceback = error_message or stderr
