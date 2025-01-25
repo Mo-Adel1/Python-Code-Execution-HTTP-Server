@@ -2,7 +2,6 @@ import json
 from execution import python
 
 def handler(method, body):
-    
     if method != "POST":
         return (405, {"error": "Method Not Allowed"})
     
@@ -11,8 +10,8 @@ def handler(method, body):
         return result
     
     try:
-        execution_result = python.run(result)
-        return format_execution_response(execution_result)
+        output = python.run(result)
+        return format(output)
     except Exception:
         return (500, {"error": "Internal server error"})
 
@@ -37,10 +36,10 @@ def parse_json(body):
     except json.JSONDecodeError:
         return None
 
-def format_execution_response(execution_result):
-    stdout, stderr = execution_result.get("stdout"), execution_result.get("stderr")
-    if execution_result.get("error"):
-        return (500, {"error": execution_result.get("error")})
+def format(output):
+    stdout, stderr = output.get("stdout"), output.get("stderr")
+    if output.get("error"):
+        return (500, {"error": output.get("error")})
     if stdout and stderr:
         return (200, {"stdout": stdout, "stderr": stderr})
     elif stdout:
