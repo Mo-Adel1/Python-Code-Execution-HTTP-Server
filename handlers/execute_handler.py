@@ -1,6 +1,6 @@
 import json
 from server.responses import build_http_response
-from execution.python_executor import execute_code
+from execution.python_executor import run_user_code
 
 def handle_execute_route(method, body):
     if method != "POST":
@@ -11,17 +11,14 @@ def handle_execute_route(method, body):
         return result
     
     try:
-        execution_result = execute_code(result)
+        execution_result = run_user_code(result)
         return format_execution_response(execution_result)
     except Exception:
         return build_http_response(500, {"error": "Internal server error"})
 
 def validate_and_parse_request(body):
-    if not body:
-        return False, build_http_response(400, {"error": "Empty body is not allowed"})
-    
     body_json = parse_json(body)
-    if not body_json:
+    if not body_json and body_json != {}:
         return False, build_http_response(400, {"error": "Invalid JSON payload"})
     
     extra_keys = [key for key in body_json.keys() if key != "code"]
@@ -50,4 +47,4 @@ def format_execution_response(execution_result):
         return build_http_response(200, {"stdout": stdout})
     elif stderr:
         return build_http_response(200, {"stderr": stderr})
-    return build_http_response(500, {"error": "Internal server error"})
+    return build_http_response(200, {"stdout": "", "stderr": ""})

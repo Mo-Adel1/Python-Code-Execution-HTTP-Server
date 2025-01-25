@@ -2,12 +2,10 @@ import socket
 from .responses import build_http_response
 
 class HTTPServer:
-    host = 'localhost'
-    port = 8765
-    routes = {}
-    def __init__(self, host, port):
+    def __init__(self, host='localhost', port=8765):
         self.host = host
         self.port = port
+        self.routes = {}
     
     def register_route(self, path, handler):
         self.routes[path] = handler
@@ -17,7 +15,7 @@ class HTTPServer:
 
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.bind((self.host, self.port))
-        server_socket.listen(5)
+        server_socket.listen()
 
         print(f"Server running at http://{self.host}:{self.port}")
 
