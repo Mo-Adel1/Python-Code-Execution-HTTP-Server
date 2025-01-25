@@ -1,6 +1,6 @@
 import json
 
-def build_http_response(status_code, message, content_type="application/json"):
+def http_response(status_code, message, content_type="application/json"):
     status_messages = {
         200: "OK",
         400: "Bad Request",

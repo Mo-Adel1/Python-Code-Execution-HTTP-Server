@@ -5,12 +5,12 @@ from multiprocessing import Process, Queue
 from .monitor import limiter
 from .cleaner import clean_traceback_paths
 
-def run_user_code(code):
+def run(code):
     result = {"stdout": "", "stderr": "", "error": ""}
 
     result_queue = Queue()
 
-    process = Process(target=execute_code, args=(code, result_queue))
+    process = Process(target=execute, args=(code, result_queue))
     process.start()
 
     limiter(process, result)
@@ -24,7 +24,7 @@ def run_user_code(code):
             result["stderr"] = result_data["stderr"]
     return result
 
-def execute_code(code, result_queue):
+def execute(code, result_queue):
     stdout = io.StringIO()
     sys.stdout = stdout
     

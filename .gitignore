@@ -2,3 +2,7 @@ server/__pycache__/
 execution/__pycache__/
 handlers/__pycache__/
 .vscode/launch.json
+routes/__pycache__/__init__.cpython-313.pyc
+routes/__pycache__/execute_handler.cpython-313.pyc
+routes/__pycache__/execute_route.cpython-313.pyc
+routes/__pycache__/execute.cpython-313.pyc

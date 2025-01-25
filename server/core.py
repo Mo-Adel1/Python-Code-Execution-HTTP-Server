@@ -1,5 +1,5 @@
 import socket
-from .responses import build_http_response
+from .responses import http_response
 
 class HTTPServer:
     def __init__(self, host='localhost', port=8765):
@@ -39,7 +39,7 @@ class HTTPServer:
         if handler:
             response = handler(method, body)
         else:
-            response = build_http_response(404, {"error": f"'{path}' path not found"})
+            response = http_response(404, {"error": f"'{path}' path not found"})
         connection.sendall(response.encode('utf-8'))
         connection.close()
 

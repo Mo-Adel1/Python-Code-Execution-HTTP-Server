@@ -1,8 +1,8 @@
-from server.http_server import HTTPServer
-from handlers.execute_handler import handle_execute_route
+from routes import execute
+from server.core import HTTPServer
 def main():
     server = HTTPServer()
-    server.register_route("/execute", handle_execute_route)
+    server.register_route("/execute", execute.handler)
     server.start()
 
 if __name__ == "__main__":
