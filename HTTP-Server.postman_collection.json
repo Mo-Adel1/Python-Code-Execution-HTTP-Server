@@ -1,0 +1,496 @@
+{
+	"info": {
+		"_postman_id": "8f999a8f-9bde-4782-a987-20d45ac2d8ad",
+		"name": "HTTP-Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26834344"
+	},
+	"item": [
+		{
+			"name": "Basic",
+			"item": [
+				{
+					"name": "Level 1 : Hello World",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful code execution\", function () {\r",
+									"     // Check if status code is 200\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var responseJson = pm.response.json();\r",
+									"    \r",
+									"    // Check if stdout is returned\r",
+									"    pm.expect(responseJson).to.have.property(\"stdout\");\r",
+									"    pm.expect(responseJson.stdout).to.eql(\"Hello, World!\\n\");\r",
+									"    \r",
+									"    // Ensure error is not present\r",
+									"    pm.expect(responseJson).to.not.have.property(\"error\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"print('Hello, World!')\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 1 : Stderr",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error during code execution (Division by Zero)\", function () {\r",
+									"    pm.response.to.have.status(200); // Check if status code is 200\r",
+									"    var responseJson = pm.response.json();\r",
+									"    \r",
+									"    // Check if stderr is returned\r",
+									"    pm.expect(responseJson).to.have.property(\"stderr\");\r",
+									"    pm.expect(responseJson.stderr).to.include(\"ZeroDivisionError\");\r",
+									"    \r",
+									"    // Ensure error is not present\r",
+									"    pm.expect(responseJson).to.not.have.property(\"error\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"1 / 0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 1 : Malformed JSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Malformed JSON in request\", function () {\r",
+									"    pm.response.to.have.status(400); // Check if status code is 400 (Bad Request)\r",
+									"    var responseJson = pm.response.json();\r",
+									"    \r",
+									"    // Check if the error message is correct\r",
+									"    pm.expect(responseJson).to.have.property(\"error\");\r",
+									"    pm.expect(responseJson.error).to.eql(\"Invalid JSON payload\");\r",
+									"    \r",
+									"    // Ensure stdout and stderr are not present\r",
+									"    pm.expect(responseJson).to.not.have.property(\"stdout\");\r",
+									"    pm.expect(responseJson).to.not.have.property(\"stderr\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"print('NAMAA')\",\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 2 : Time Limit Exceeded",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Time limit exceeded\", function () {\r",
+									"    pm.response.to.have.status(500); // Assuming 500 Internal Server time limit exceeded\r",
+									"    var responseJson = pm.response.json();\r",
+									"    \r",
+									"    // Check if an error message is returned\r",
+									"    pm.expect(responseJson).to.have.property(\"error\");\r",
+									"    pm.expect(responseJson.error).to.eql(\"Execution timeout\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"while True: pass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 2 : Memory Limit Exceeded",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is 'Memory limit exceeded'\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.error).to.equal(\"Memory limit exceeded\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"a = ' ' * 1024 * 1024 * 110\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Other Scenarios",
+			"item": [
+				{
+					"name": "Missing 'code' Field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is 'Code is required'\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.error).to.equal(\"Code is required\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unexpected Keys in JSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message contains 'Unexpected keys: extra_key'\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.error).to.include(\"Unexpected keys: extra_key\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"print('Hello')\",\r\n  \"extra_key\": \"extra_value\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stdout and Stderr exist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains stdout\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"stdout\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"stdout is empty\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.stdout).to.equal(\"\\n\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains stderr\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"stderr\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"stderr contains 'ZeroDivisionError'\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.stderr).to.include(\"ZeroDivisionError\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"print(); 1 / 0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Method Not Allowed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 405\", function () {\r",
+									"    pm.response.to.have.status(405);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"error\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is 'Method Not Allowed'\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.error).to.equal(\"Method Not Allowed\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"print('Hello')\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
