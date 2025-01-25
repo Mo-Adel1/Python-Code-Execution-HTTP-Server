@@ -52,10 +52,10 @@ python3 --version
    ```bash
    python -m venv venv
    ```
- or 
- ```bash
+   or
+   ```bash
    python3 -m venv venv
- ```
+   ```
 6. Activate venv:
    - Windows:
    ```bash
