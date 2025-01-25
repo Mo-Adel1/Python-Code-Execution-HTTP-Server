@@ -72,5 +72,35 @@ To run the project, execute the following command (make sure you are in the root
 ```bash
 python main.py
 ```
+## Easy Testing with Postman
+
+For easy testing, we have provided a **Postman Collection** that contains basic examples and unit tests for the server.
+
+### Postman Collection: `HTTP-Server.postman_collection.json`
+
+This collection includes pre-configured requests and tests to help you quickly test the server's functionality. The collection is located in the **root directory** of the project.
+
+### How to Import the Collection in Postman:
+
+1. Open **Postman**.
+2. Click on the **Import** button (located in the top-left corner).
+3. In the import window, select the **File** tab.
+4. Click on **Choose Files** and select the `HTTP-Server.postman_collection.json` file from the **root directory** of your project.
+5. Click **Open**, and the collection will be imported into Postman.
+
+### How to Run the Collection:
+
+Once the collection is imported, you can run it by following these steps:
+
+1. Go to the **Collections** tab in Postman.
+2. Select the **HTTP-Server** collection.
+3. Click on the **Run** button (located at the top-right of the collection view).
+4. Select your desired environment (if needed), then click **Start Run**.
+
+This will execute all the requests in the collection, and Postman will run the unit tests for each request to ensure everything is functioning correctly.
+
+### Postman Tests
+
+The collection includes unit tests in JavaScript that validate the responses from the server, ensuring that the server is working as expected. If any test fails, Postman will provide feedback so you can troubleshoot.
 
 
