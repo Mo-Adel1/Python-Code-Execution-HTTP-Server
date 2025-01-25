@@ -95,7 +95,7 @@ Once the collection is imported, you can run it by following these steps:
 1. Go to the **Collections** tab in Postman.
 2. Select the **HTTP-Server** collection.
 3. Click on the **Run** button (located at the top-right of the collection view).
-4. Select your desired environment (if needed), then click **Start Run**.
+4. Then click **Start Run**.
 
 This will execute all the requests in the collection, and Postman will run the unit tests for each request to ensure everything is functioning correctly.
 
