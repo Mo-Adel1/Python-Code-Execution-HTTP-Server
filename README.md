@@ -27,13 +27,13 @@ This project is a Python-based HTTP server that dynamically executes user-provid
    ```bash
    python -m venv venv
    ```
-5. Create venv:
+5. Activate venv:
    - Windows:
    ```bash
    .\venv\Scripts\activate
    ```
    - Linux:
-     ```bash
+   ```bash
    source venv/bin/activate
    ```
 6. Install the required dependencies:
