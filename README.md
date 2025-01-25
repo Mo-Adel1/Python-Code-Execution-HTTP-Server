@@ -23,7 +23,20 @@ This project is a Python-based HTTP server that dynamically executes user-provid
    ```bash
    cd Python-Code-Execution-HTTP-Server
    ```
-4. Install the required dependencies:
+4. Create venv:
+   ```bash
+   python -m venv venv
+   ```
+5. Create venv:
+   - Windows:
+   ```bash
+   .\venv\Scripts\activate
+   ```
+   - Linux:
+     ```bash
+   source venv/bin/activate
+   ```
+6. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
