@@ -52,6 +52,10 @@ python3 --version
    ```bash
    python -m venv venv
    ```
+   or
+   ```bash
+   python3 -m venv venv
+   ```
 6. Activate venv:
    - Windows:
    ```bash
@@ -71,6 +75,10 @@ To run the project, execute the following command (make sure you are in the root
 
 ```bash
 python main.py
+```
+or
+```bash
+python3 main.py
 ```
 ## Easy Testing with Postman
 
