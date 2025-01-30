@@ -17,20 +17,18 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Successful code execution\", function () {\r",
-									"     // Check if status code is 200\r",
 									"    pm.response.to.have.status(200);\r",
 									"    var responseJson = pm.response.json();\r",
 									"    \r",
-									"    // Check if stdout is returned\r",
 									"    pm.expect(responseJson).to.have.property(\"stdout\");\r",
 									"    pm.expect(responseJson.stdout).to.eql(\"Hello, World!\\n\");\r",
 									"    \r",
-									"    // Ensure error is not present\r",
 									"    pm.expect(responseJson).to.not.have.property(\"error\");\r",
 									"});\r",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -68,19 +66,18 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Error during code execution (Division by Zero)\", function () {\r",
-									"    pm.response.to.have.status(200); // Check if status code is 200\r",
+									"    pm.response.to.have.status(200);\r",
 									"    var responseJson = pm.response.json();\r",
 									"    \r",
-									"    // Check if stderr is returned\r",
 									"    pm.expect(responseJson).to.have.property(\"stderr\");\r",
 									"    pm.expect(responseJson.stderr).to.include(\"ZeroDivisionError\");\r",
 									"    \r",
-									"    // Ensure error is not present\r",
 									"    pm.expect(responseJson).to.not.have.property(\"error\");\r",
 									"});\r",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -118,20 +115,19 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Malformed JSON in request\", function () {\r",
-									"    pm.response.to.have.status(400); // Check if status code is 400 (Bad Request)\r",
+									"    pm.response.to.have.status(400);\r",
 									"    var responseJson = pm.response.json();\r",
 									"    \r",
-									"    // Check if the error message is correct\r",
 									"    pm.expect(responseJson).to.have.property(\"error\");\r",
 									"    pm.expect(responseJson.error).to.eql(\"Invalid JSON payload\");\r",
 									"    \r",
-									"    // Ensure stdout and stderr are not present\r",
 									"    pm.expect(responseJson).to.not.have.property(\"stdout\");\r",
 									"    pm.expect(responseJson).to.not.have.property(\"stderr\");\r",
 									"});\r",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -169,15 +165,15 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Time limit exceeded\", function () {\r",
-									"    pm.response.to.have.status(500); // Assuming 500 Internal Server time limit exceeded\r",
+									"    pm.response.to.have.status(500);\r",
 									"    var responseJson = pm.response.json();\r",
 									"    \r",
-									"    // Check if an error message is returned\r",
 									"    pm.expect(responseJson).to.have.property(\"error\");\r",
 									"    pm.expect(responseJson.error).to.eql(\"Execution timeout\");\r",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -240,6 +236,191 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n  \"code\": \"a = ' ' * 1024 * 1024 * 110\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 3 : New Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check response for id\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");\r",
+									"\r",
+									"    // Store the id in the environment variable\r",
+									"    pm.environment.set(\"execution_id\", jsonResponse.id);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"x=5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 3 : Using Existing Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check stdout output\", function () {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"stdout\", \"5\\n\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"{{execution_id}}\",\r\n  \"code\": \"print(x)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 4: Filesystem Access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Filesystem access restriction\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData.stderr).to.eql(\"Traceback (most recent call last):\\n File \\\"<stdin>\\\", line 1, in <module>\\nPermissionError: [Errno 13] Permission denied: 'file.txt'\\n\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"import os; os.remove('file.txt')\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Level 4: Network Access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Network access restriction\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData.stderr).to.eql(\"Traceback (most recent call last):\\n File \\\"<stdin>\\\", line 1, in <module>\\nPermissionError: [Errno 13] Permission denied: network access is not allowed\\n\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('www.example.com', 80))\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -336,7 +517,7 @@
 									"\r",
 									"pm.test(\"Error message contains 'Unexpected keys: extra_key'\", function () {\r",
 									"    var jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.error).to.include(\"Unexpected keys: extra_key\");\r",
+									"    pm.expect(jsonResponse.error).to.include(\"Unexpected key(s): extra_key\");\r",
 									"});\r",
 									""
 								],
