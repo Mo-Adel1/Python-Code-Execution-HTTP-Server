@@ -57,11 +57,11 @@ python3 --version
    ```bash
    git clone https://github.com/Mo-Adel1/Python-Code-Execution-HTTP-Server.git
    ```
-4. Navigate to the project directory:
+4. **Navigate to the project directory:**
    ```bash
    cd Python-Code-Execution-HTTP-Server
    ```
-5. Create venv:
+5. **Create venv:**
    ```bash
    python -m venv venv
    ```
@@ -69,7 +69,7 @@ python3 --version
    ```bash
    python3 -m venv venv
    ```
-6. Activate venv:
+6. **Activate venv:**
    - Windows:
    ```bash
    .\venv\Scripts\activate
@@ -78,7 +78,7 @@ python3 --version
    ```bash
    source venv/bin/activate
    ```
-7. Install the required dependencies:
+7. **Install the required dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
