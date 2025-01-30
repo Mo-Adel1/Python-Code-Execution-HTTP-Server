@@ -10,9 +10,12 @@ This project is a Python-based HTTP server that dynamically executes user-provid
 
 ### 2. Enforce execution limits, including a 2-second timeout and 100MB memory restriction.
 
-### 3. Persistent Interpreter Sessions: instead of starting a new Python process for each request, initialize a persistent interpreter session and assign it a unique identifier (UUID).
+### 3. Persistent Interpreter Sessions:
+       Instead of starting a new Python process for each request,initialize a persistent interpreter session and assign it a unique identifier (UUID).
 
-### 4. Environment Hardening(Sandboxing): Restrict the execution environment to prevent potentially harmful actions. Examples:- Filesystem Access: Restrict access to the filesystem to prevent reading, writing, or manipulating files.- Network Access: Disable networking capabilities to prevent outgoing or incoming network requests.
+### 4. Environment Hardening(Sandboxing): Restrict the execution environment to prevent potentially harmful actions.
+       - Filesystem Access: Restrict access to the filesystem to prevent reading, writing, or manipulating files.
+       - Network Access: Disable networking capabilities to prevent outgoing or incoming network requests.
 
 ## Prerequisites
 
