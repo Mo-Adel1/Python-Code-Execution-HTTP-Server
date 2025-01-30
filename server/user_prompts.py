@@ -9,4 +9,8 @@ def handle_no_available_ports():
     retry = input("Would you like to try again later? (y/n): ")
     if retry.lower() == 'y':
         print("Retrying in a few seconds...")
-    return None
+        return None
+    else:
+        print("Exiting the server...")
+        exit()
+
