@@ -19,7 +19,7 @@ This project is a Python-based HTTP server that dynamically executes user-provid
 
 ## Prerequisites
 
-- **Python 3** is required to run this project. Ensure that you have **Python 3.6 or higher** installed on your machine.
+- **Python 3** is required to run this project. Ensure that you have **Python 3.11 or higher** installed on your machine.
 
 ### Check Python version:
 
