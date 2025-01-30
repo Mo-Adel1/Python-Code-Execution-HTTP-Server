@@ -267,12 +267,13 @@
 									"    var jsonResponse = pm.response.json();\r",
 									"    pm.expect(jsonResponse).to.have.property(\"id\");\r",
 									"\r",
-									"    // Store the id in the environment variable\r",
-									"    pm.environment.set(\"execution_id\", jsonResponse.id);\r",
+									"    // Store the id in the collection Variables\r",
+									"    pm.collectionVariables.set(\"session_id\", jsonResponse.id);\r",
 									"});\r",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -315,7 +316,8 @@
 									"});\r",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -324,7 +326,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"{{execution_id}}\",\r\n  \"code\": \"print(x)\"\r\n}",
+							"raw": "{\r\n  \"id\": \"{{session_id}}\",\r\n  \"code\": \"print(x)\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -672,6 +674,35 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "session_id",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
