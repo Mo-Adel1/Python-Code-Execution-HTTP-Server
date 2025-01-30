@@ -6,3 +6,6 @@ routes/__pycache__/__init__.cpython-313.pyc
 routes/__pycache__/execute_handler.cpython-313.pyc
 routes/__pycache__/execute_route.cpython-313.pyc
 routes/__pycache__/execute.cpython-313.pyc
+routes/__pycache__/controller.cpython-313.pyc
+routes/__pycache__/response_utils.cpython-313.pyc
+routes/__pycache__/json_utils.cpython-313.pyc
