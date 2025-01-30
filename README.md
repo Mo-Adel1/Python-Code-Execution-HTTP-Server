@@ -7,18 +7,27 @@ This project is a Python-based HTTP server that dynamically executes user-provid
 ## Key Features:
 
 ### 1. Execute Python code snippets via a POST request at the `/execute` endpoint.
+
 ### 2. Enforce execution limits, including a 2-second timeout and 100MB memory restriction.
+
+### 3. Persistent Interpreter Sessions: instead of starting a new Python process for each request, initialize a persistent interpreter session and assign it a unique identifier (UUID).
+
+### 4. Environment Hardening(Sandboxing): Restrict the execution environment to prevent potentially harmful actions. Examples:- Filesystem Access: Restrict access to the filesystem to prevent reading, writing, or manipulating files.- Network Access: Disable networking capabilities to prevent outgoing or incoming network requests.
 
 ## Prerequisites
 
 - **Python 3** is required to run this project. Ensure that you have **Python 3.6 or higher** installed on your machine.
 
 ### Check Python version:
+
 To check if Python 3 is installed, run:
+
 ```bash
 python --version
 ```
+
 or
+
 ```bash
 python3 --version
 ```
@@ -30,6 +39,7 @@ python3 --version
 1. **Open CMD for Windows or Terminal for Linux.**
 
 2. **Install Python 3 (if not installed):**
+
    - **For Windows:**
      - Visit [Python Downloads](https://www.python.org/downloads/) and download the latest version of Python 3 for Windows.
      - During installation, make sure to **check the box** that says "Add Python to PATH."
@@ -69,6 +79,7 @@ python3 --version
    ```bash
    pip install -r requirements.txt
    ```
+
 ## Running the Project
 
 To run the project, execute the following command (make sure you are in the root folder):
@@ -76,10 +87,13 @@ To run the project, execute the following command (make sure you are in the root
 ```bash
 python main.py
 ```
+
 or
+
 ```bash
 python3 main.py
 ```
+
 ## Easy Testing with Postman
 
 For easy testing, I have provided a **Postman Collection** that contains basic examples and unit tests for the server.
@@ -110,5 +124,3 @@ This will execute all the requests in the collection, and Postman will run the u
 ### Postman Tests
 
 The collection includes unit tests in JavaScript that validate the responses from the server, ensuring that the server is working as expected. If any test fails, Postman will provide feedback so you can troubleshoot.
-
-
