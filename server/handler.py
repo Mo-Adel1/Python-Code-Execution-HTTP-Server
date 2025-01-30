@@ -1,3 +1,6 @@
+import datetime
+
+
 def handle_request(connection):
     try:
         raw_request = connection.recv(1024).decode('utf-8')
@@ -10,6 +13,8 @@ def handle_request(connection):
     request_lines = raw_request.split('\r\n')
     try:
         method, path, http_version = request_lines[0].split()
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        print(f"~~> {current_time}: {method}, {path}")
     except ValueError:
         raise ValueError("Malformed request line")
 
